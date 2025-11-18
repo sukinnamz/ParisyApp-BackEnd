@@ -1,0 +1,12 @@
+Flask
+Flask-SQLAlchemy
+Flask-Migrate
+Flask-JWT-Extended
+Werkzeug
+pytest
+pytest-cov
+pytest-mock
+Faker
+requests
+requests-mock
+pytest-dotenv
