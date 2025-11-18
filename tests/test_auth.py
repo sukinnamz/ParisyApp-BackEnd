@@ -1,8 +1,10 @@
 from faker import Faker
 from models.user import User
 from extensions import db
+from werkzeug.security import generate_password_hash
 
 fake = Faker()
+
 
 def test_register(client, app):
     data = {
@@ -23,19 +25,22 @@ def test_register(client, app):
 
 
 def test_login_success(client, app):
-    # buat user manual
-    user = User(
-        nama="Test",
-        email="test@mail.com",
-        password="$pbkdf2-sha256$fakehash",  # bypass hashing
-    )
-    db.session.add(user)
-    db.session.commit()
+    # buat user dengan password hashed
+    hashed = generate_password_hash("password123")
 
-    # mock check_password_hash supaya selalu true
+    with app.app_context():
+        user = User(
+            nama="Test User",
+            email="test@example.com",
+            password=hashed
+        )
+        db.session.add(user)
+        db.session.commit()
+
+    # login dengan email yang benar
     res = client.post("/auth/login", json={
-        "email": "test@mail.com",
-        "password": "abc"
+        "email": "test@example.com",
+        "password": "password123"
     })
 
     assert res.status_code == 200
@@ -47,4 +52,5 @@ def test_login_fail(client):
         "email": fake.email(),
         "password": "wrong"
     })
+
     assert res.status_code == 401
