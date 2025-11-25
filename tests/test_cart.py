@@ -1,4 +1,3 @@
-from models.keranjang import Keranjang
 from models.sayur import Sayur
 from models.user import User
 from extensions import db
@@ -18,8 +17,11 @@ def test_add_to_cart(client, token, app):
     }, headers=headers)
 
     assert res.status_code == 200
+    assert res.json["message"] == "Berhasil memasukkan ke keranjang"
 
-    with app.app_context():
-        cart = Keranjang.query.filter_by(id_sayur=1).first()
-        assert cart is not None
-        assert cart.jumlah == 3
+    # Test get cart
+    res = client.get("/cart/", headers=headers)
+    assert res.status_code == 200
+    assert len(res.json["cart"]) == 1
+    assert res.json["cart"][0]["id_sayur"] == 1
+    assert res.json["cart"][0]["jumlah"] == 3
