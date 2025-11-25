@@ -163,7 +163,7 @@ def test_delete_user(client, app, token):
     assert "Akun berhasil dihapus" in res.json["message"]
 
     with app.app_context():
-        user = User.query.get(user_id)
+        user = db.session.get(User, user_id)
         assert user is None
 
 

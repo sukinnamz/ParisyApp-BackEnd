@@ -41,7 +41,7 @@ def login():
 @jwt_required()
 def get_profile():
     user_id = get_jwt_identity()
-    user = User.query.get(user_id)
+    user = db.session.get(User, user_id)
 
     if not user:
         return jsonify({"message": "User tidak ditemukan"}), 404
@@ -61,7 +61,7 @@ def get_profile():
 @jwt_required()
 def edit_user():
     user_id = get_jwt_identity()
-    user = User.query.get(user_id)
+    user = db.session.get(User, user_id)
 
     if not user:
         return jsonify({"message": "User tidak ditemukan"}), 404
@@ -96,7 +96,7 @@ def edit_user():
 @jwt_required()
 def delete_user():
     user_id = get_jwt_identity()
-    user = User.query.get(user_id)
+    user = db.session.get(User, user_id)
 
     if not user:
         return jsonify({"message": "User tidak ditemukan"}), 404
