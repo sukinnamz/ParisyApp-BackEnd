@@ -2,7 +2,7 @@ from flask import Flask
 from config import Config
 from extensions import db, jwt
 from models import *
-from routes import auth_bp, sayur_bp, cart_bp, transaksi_bp
+from routes import transaction_bp, detail_transaction_bp
 
 def create_app():
     app = Flask(__name__)
@@ -11,10 +11,8 @@ def create_app():
     db.init_app(app)
     jwt.init_app(app)
 
-    app.register_blueprint(auth_bp, url_prefix="/auth")
-    app.register_blueprint(sayur_bp, url_prefix="/sayur")
-    app.register_blueprint(cart_bp, url_prefix="/cart")
-    app.register_blueprint(transaksi_bp, url_prefix="/transaksi")
+    app.register_blueprint(transaction_bp, url_prefix="/transaction")
+    app.register_blueprint(detail_transaction_bp, url_prefix="/detail-transaction")
 
     with app.app_context():
         db.create_all()
