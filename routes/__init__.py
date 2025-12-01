@@ -1,0 +1,1 @@
+from .vegetable import vegetable_bp
