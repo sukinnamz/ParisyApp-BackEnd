@@ -46,7 +46,7 @@ def login():
         if not user or not check_password_hash(user.password, data["password"]):
             return jsonify({"message": "Email atau password salah"}), 401
 
-        token = create_access_token(identity=user.id)
+        token = create_access_token(identity=str(user.id))
         
         return jsonify({
             "message": "Login berhasil",
@@ -68,7 +68,7 @@ def login():
 @jwt_required()
 def profile():
     try:
-        current_user_id = get_jwt_identity()
+        current_user_id = int(get_jwt_identity())
         user = Users.query.get(current_user_id)
         
         if not user:
