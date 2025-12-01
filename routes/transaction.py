@@ -12,11 +12,18 @@ def create():
     try:
         data = request.get_json()
         user_id = get_jwt_identity()
+        
+        # Generate transaction code
+        from datetime import datetime
+        code = f"TRX{datetime.now().strftime('%Y%m%d%H%M%S')}"
 
         transaction = Transactions(
+            code=code,
             user_id=user_id,
-            total_amount=data["total_amount"],
-            status="pending"
+            total_price=data["total_price"],
+            payment_method=data.get("payment_method", "transfer"),
+            transaction_status="pending",
+            notes=data.get("notes")
         )
         db.session.add(transaction)
         db.session.commit()
@@ -26,7 +33,8 @@ def create():
                 transaction_id=transaction.id,
                 vegetable_id=item["vegetable_id"],
                 quantity=item["quantity"],
-                price=item["price"]
+                unit_price=item["unit_price"],
+                subtotal=item["quantity"] * item["unit_price"]
             )
             db.session.add(detail)
 
@@ -44,9 +52,13 @@ def update(id):
     try:
         data = request.get_json()
         transaction = Transactions.query.get_or_404(id)
-        transaction.status = data.get("status", transaction.status)
+        transaction.transaction_status = data.get("transaction_status", transaction.transaction_status)
+        if "payment_method" in data:
+            transaction.payment_method = data["payment_method"]
+        if "notes" in data:
+            transaction.notes = data["notes"]
         db.session.commit()
-        return jsonify({"message": "Status transaksi berhasil diperbarui"})
+        return jsonify({"message": "Transaksi berhasil diperbarui"})
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": f"Error: {str(e)}"}), 500
@@ -65,13 +77,17 @@ def history():
             items.append({
                 "vegetable_id": detail.vegetable_id,
                 "quantity": detail.quantity,
-                "price": str(detail.price)
+                "unit_price": str(detail.unit_price),
+                "subtotal": str(detail.subtotal)
             })
         result.append({
             "transaction_id": txn.id,
-            "total_amount": str(txn.total_amount),
-            "status": txn.status,
-            "created_at": txn.created_at,
+            "code": txn.code,
+            "total_price": str(txn.total_price),
+            "payment_method": txn.payment_method,
+            "transaction_status": txn.transaction_status,
+            "notes": txn.notes,
+            "created_at": txn.created_at.isoformat() if txn.created_at else None,
             "items": items
         })
     return jsonify(result)
@@ -86,14 +102,19 @@ def detail(id):
         items.append({
             "vegetable_id": detail.vegetable_id,
             "quantity": detail.quantity,
-            "price": str(detail.price)
+            "unit_price": str(detail.unit_price),
+            "subtotal": str(detail.subtotal)
         })
     result = {
         "transaction_id": transaction.id,
+        "code": transaction.code,
         "user_id": transaction.user_id,
-        "total_amount": str(transaction.total_amount),
-        "status": transaction.status,
-        "created_at": transaction.created_at,
+        "total_price": str(transaction.total_price),
+        "payment_method": transaction.payment_method,
+        "transaction_status": transaction.transaction_status,
+        "notes": transaction.notes,
+        "created_at": transaction.created_at.isoformat() if transaction.created_at else None,
+        "updated_at": transaction.updated_at.isoformat() if transaction.updated_at else None,
         "items": items
     }
     return jsonify(result)
