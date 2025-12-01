@@ -79,6 +79,7 @@ def update(id):
     veg.image = data.get("image", veg.image)
     veg.category = data.get("category", veg.category)
     veg.status = data.get("status", veg.status)
+    veg.updated_at = data.get("updated_at", veg.updated_at)
 
     db.session.commit()
 
