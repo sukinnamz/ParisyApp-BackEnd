@@ -64,69 +64,59 @@ def login():
         return jsonify({"message": f"Error: {str(e)}"}), 500
 
 
-@auth_bp.get("/profile")
+@auth_bp.get("/profile/<int:id>")
 @jwt_required()
-def profile():
+def profile(id):
     try:
-        current_user_id = int(get_jwt_identity())
-        user = Users.query.get(current_user_id)
-        
-        if not user:
-            return jsonify({"message": "User tidak ditemukan"}), 404
+        user = Users.query.get_or_404(id)
         
         return jsonify({
             "id": user.id,
             "name": user.name,
             "email": user.email,
-            "role": user.role,
-            "sub_role": user.sub_role,
             "address": user.address,
             "phone": user.phone,
-            "created_at": user.created_at.isoformat() if user.created_at else None
+            "role": user.role,
+            "sub_role": user.sub_role,
+            "created_at": user.created_at,
+            "updated_at": user.updated_at
         }), 200
-        
     except Exception as e:
         return jsonify({"message": f"Error: {str(e)}"}), 500
-    
-@auth_bp.put("/edit")
+
+@auth_bp.put("/edit/<int:id>")
 @jwt_required()
-def edit():
+def edit(id):
     try:
-        current_user_id = int(get_jwt_identity())
-        user = Users.query.get(current_user_id)
-        
-        if not user:
-            return jsonify({"message": "User tidak ditemukan"}), 404
-        
         data = request.get_json()
-        
+        user = Users.query.get_or_404(id)
+
         user.name = data.get("name", user.name)
         user.address = data.get("address", user.address)
         user.phone = data.get("phone", user.phone)
-        
+
+        if "password" in data and data["password"]:
+            user.password = generate_password_hash(data["password"])
+
         db.session.commit()
-        
+
         return jsonify({"message": "Profil berhasil diperbarui"}), 200
-        
+
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": f"Error: {str(e)}"}), 500
     
-@auth_bp.put("/delete")
+@auth_bp.put("/delete/<int:id>")
 @jwt_required()
-def delete():
+def delete(id):
     try:
-        current_user_id = int(get_jwt_identity())
-        user = Users.query.get(current_user_id)
-        
-        if not user:
-            return jsonify({"message": "User tidak ditemukan"}), 404
-        
+        user = Users.query.get_or_404(id)
+
         db.session.delete(user)
         db.session.commit()
-        
+
         return jsonify({"message": "Akun berhasil dihapus"}), 200
-        
+
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": f"Error: {str(e)}"}), 500
