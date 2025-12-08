@@ -87,3 +87,46 @@ def profile():
         
     except Exception as e:
         return jsonify({"message": f"Error: {str(e)}"}), 500
+    
+@auth_bp.put("/edit")
+@jwt_required()
+def edit():
+    try:
+        current_user_id = int(get_jwt_identity())
+        user = Users.query.get(current_user_id)
+        
+        if not user:
+            return jsonify({"message": "User tidak ditemukan"}), 404
+        
+        data = request.get_json()
+        
+        user.name = data.get("name", user.name)
+        user.address = data.get("address", user.address)
+        user.phone = data.get("phone", user.phone)
+        
+        db.session.commit()
+        
+        return jsonify({"message": "Profil berhasil diperbarui"}), 200
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": f"Error: {str(e)}"}), 500
+    
+@auth_bp.put("/delete")
+@jwt_required()
+def delete():
+    try:
+        current_user_id = int(get_jwt_identity())
+        user = Users.query.get(current_user_id)
+        
+        if not user:
+            return jsonify({"message": "User tidak ditemukan"}), 404
+        
+        db.session.delete(user)
+        db.session.commit()
+        
+        return jsonify({"message": "Akun berhasil dihapus"}), 200
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": f"Error: {str(e)}"}), 500
