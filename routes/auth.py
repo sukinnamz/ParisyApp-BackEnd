@@ -106,7 +106,7 @@ def edit(id):
         db.session.rollback()
         return jsonify({"message": f"Error: {str(e)}"}), 500
     
-@auth_bp.put("/delete/<int:id>")
+@auth_bp.delete("/delete/<int:id>")
 @jwt_required()
 def delete(id):
     try:
