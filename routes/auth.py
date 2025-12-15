@@ -2,121 +2,93 @@ from flask import Blueprint, request, jsonify
 from extensions import db
 from models.users import Users
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import create_access_token, jwt_required
 
 auth_bp = Blueprint("auth", __name__)
 
+def user_data(user, data_full=False):
+    data = {
+        "id": user.id,
+        "name": user.name,
+        "email": user.email,
+        "password": user.password,
+        "role": user.role,
+        "sub_role": user.sub_role
+    }
+    if data_full:
+        data.update({
+            "address": user.address,
+            "phone": user.phone,
+            "created_at": user.created_at,
+            "updated_at": user.updated_at
+        })
+    return data
+
 @auth_bp.post("/register")
 def register():
-    try:
-        data = request.get_json()
+    data = request.get_json()
 
-        if Users.query.filter_by(email=data["email"]).first():
-            return jsonify({"message": "Email sudah terdaftar"}), 409
-        
-        hashed = generate_password_hash(data["password"])
+    if Users.query.filter_by(email=data["email"]).first():
+        return jsonify({"message": "Email sudah terdaftar"}), 409
+    
+    hashed = generate_password_hash(data["password"])
 
-        user = Users(
-            name=data["name"],
-            email=data["email"],
-            password=hashed,
-            address=data.get("address", ""),
-            phone=data.get("phone", ""),
-            role=data.get("role", "user"),
-            sub_role=data.get("sub_role", "warga")
-        )
+    user = Users(
+        name=data["name"],
+        email=data["email"],
+        password=hashed,
+        address=data.get("address", ""),
+        phone=data.get("phone", ""),
+        role=data.get("role", "user"),
+        sub_role=data.get("sub_role", "warga")
+    )
 
-        db.session.add(user)
-        db.session.commit()
+    db.session.add(user)
+    db.session.commit()
 
-        return jsonify({"message": "Registrasi berhasil",}), 201
-
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"message": f"Error: {str(e)}"}), 500
-
+    return jsonify({"message": "Registrasi berhasil",}), 201
 
 @auth_bp.post("/login")
 def login():
-    try:
-        data = request.get_json()
+    data = request.get_json()
+    user = Users.query.filter_by(email=data["email"]).first()
 
-        user = Users.query.filter_by(email=data["email"]).first()
+    if not user or not check_password_hash(user.password, data["password"]):
+        return jsonify({"message": "Email atau password salah"}), 401
 
-        if not user or not check_password_hash(user.password, data["password"]):
-            return jsonify({"message": "Email atau password salah"}), 401
-
-        token = create_access_token(identity=str(user.id))
-        
-        return jsonify({
-            "message": "Login berhasil",
-            "token": token,
-            "user": {
-                "id": user.id,
-                "name": user.name,
-                "email": user.email,
-                "role": user.role,
-                "sub_role": user.sub_role
-            }
-        }), 200
-        
-    except Exception as e:
-        return jsonify({"message": f"Error: {str(e)}"}), 500
+    return jsonify({
+        "message": "Login berhasil",
+        "token": create_access_token(identity=str(user.id)),
+        "user": user_data(user)
+    }), 200
 
 
 @auth_bp.get("/profile/<int:id>")
 @jwt_required()
 def profile(id):
-    try:
-        user = Users.query.get_or_404(id)
-        
-        return jsonify({
-            "id": user.id,
-            "name": user.name,
-            "email": user.email,
-            "address": user.address,
-            "phone": user.phone,
-            "role": user.role,
-            "sub_role": user.sub_role,
-            "created_at": user.created_at,
-            "updated_at": user.updated_at
-        }), 200
-    except Exception as e:
-        return jsonify({"message": f"Error: {str(e)}"}), 500
+    user = Users.query.get_or_404(id)
+    return jsonify(user_data(user, data_full=True)), 200
 
 @auth_bp.put("/edit/<int:id>")
 @jwt_required()
 def edit(id):
-    try:
-        data = request.get_json()
-        user = Users.query.get_or_404(id)
+    data = request.get_json()
+    user = Users.query.get_or_404(id)
 
-        user.name = data.get("name", user.name)
-        user.address = data.get("address", user.address)
-        user.phone = data.get("phone", user.phone)
+    user.name = data.get("name", user.name)
+    user.address = data.get("address", user.address)
+    user.phone = data.get("phone", user.phone)
 
-        if "password" in data and data["password"]:
-            user.password = generate_password_hash(data["password"])
+    if data.get("password"):
+        user.password = generate_password_hash(data["password"])
 
-        db.session.commit()
-
-        return jsonify({"message": "Profil berhasil diperbarui"}), 200
-
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"message": f"Error: {str(e)}"}), 500
+    db.session.commit()
+    return jsonify({"message": "Profil berhasil diperbarui"}), 200
     
 @auth_bp.delete("/delete/<int:id>")
 @jwt_required()
 def delete(id):
-    try:
-        user = Users.query.get_or_404(id)
-
-        db.session.delete(user)
-        db.session.commit()
-
-        return jsonify({"message": "Akun berhasil dihapus"}), 200
-
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"message": f"Error: {str(e)}"}), 500
+    user = Users.query.get_or_404(id)
+    db.session.delete(user)
+    db.session.commit()
+    return jsonify({"message": "Akun berhasil dihapus"}), 200
