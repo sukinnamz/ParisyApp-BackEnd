@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from extensions import db
 from models.users import Users
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_jwt_extended import create_access_token, jwt_required
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -62,6 +62,19 @@ def login():
         "user": user_data(user)
     }), 200
 
+@auth_bp.get("/logout")
+@jwt_required()
+def logout():
+    user_id = get_jwt_identity()
+    user = Users.query.get_or_404(int(user_id))
+    return jsonify({
+        "message": "Logout berhasil",
+        "user": {
+            "id": user.id,
+            "name": user.name,
+            "email": user.email
+        }
+    }), 200
 
 @auth_bp.get("/profile/<int:id>")
 @jwt_required()
