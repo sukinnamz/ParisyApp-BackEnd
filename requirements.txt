@@ -2,6 +2,7 @@ Flask
 Flask-SQLAlchemy
 Flask-Migrate
 Flask-JWT-Extended
+Flask-CORS
 Werkzeug
 pytest
 pytest-cov
