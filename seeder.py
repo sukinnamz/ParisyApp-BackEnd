@@ -31,7 +31,16 @@ def seed():
                 phone="081234567890"
             ),
             Users(
-                name="Bendahara RW",
+                name="Sekretaris",
+                email="sekretaris@parisy.com",
+                password=generate_password_hash("sekretaris123"),
+                role="admin",
+                sub_role="sekretaris",
+                address="Jl. Raya No. 2",
+                phone="081234567891"
+            ),
+            Users(
+                name="Bendahara",
                 email="bendahara@parisy.com",
                 password=generate_password_hash("bendahara123"),
                 role="admin",
@@ -41,10 +50,19 @@ def seed():
             ),
             Users(
                 name="Ketua RT 01",
-                email="rt01@parisy.com",
-                password=generate_password_hash("rt123"),
+                email="rt@parisy.com",
+                password=generate_password_hash("rt1234"),
                 role="user",
                 sub_role="rt",
+                address="Jl. Mawar No. 5",
+                phone="081234567892"
+            ),
+            Users(
+                name="Ketua RW",
+                email="rw@parisy.com",
+                password=generate_password_hash("rw1234"),
+                role="user",
+                sub_role="rw",
                 address="Jl. Mawar No. 5",
                 phone="081234567892"
             ),
@@ -56,16 +74,7 @@ def seed():
                 sub_role="warga",
                 address="Jl. Melati No. 10",
                 phone="081234567893"
-            ),
-            Users(
-                name="Siti Aminah",
-                email="siti@gmail.com",
-                password=generate_password_hash("siti123"),
-                role="user",
-                sub_role="warga",
-                address="Jl. Anggrek No. 15",
-                phone="081234567894"
-            ),
+            )
         ]
         
         db.session.add_all(users)
