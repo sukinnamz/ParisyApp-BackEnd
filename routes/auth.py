@@ -76,18 +76,21 @@ def logout():
         }
     }), 200
 
+# RT (warga), RW (sekretaris, bendahara, warga), Admin
 @auth_bp.get("/profile/<int:id>")
 @jwt_required()
 def profile(id):
     user = Users.query.get_or_404(id)
     return jsonify(user_data(user, data_full=True)), 200
 
+# RT (warga), RW (sekretaris, bendahara, warga), Admin
 @auth_bp.get("/all")
 @jwt_required()
 def all_users():
     users = Users.query.all()
     return jsonify([user_data(user) for user in users]), 200
 
+# Admin
 @auth_bp.put("/edit/<int:id>")
 @jwt_required()
 def edit(id):
@@ -104,6 +107,7 @@ def edit(id):
     db.session.commit()
     return jsonify({"message": "Profil berhasil diperbarui"}), 200
     
+# Admin
 @auth_bp.delete("/delete/<int:id>")
 @jwt_required()
 def delete(id):

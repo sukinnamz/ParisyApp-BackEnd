@@ -26,7 +26,7 @@ def seed():
                 email="admin@parisy.com",
                 password=generate_password_hash("admin123"),
                 role="admin",
-                sub_role="",
+                sub_role="admin",
                 address="Jl. Raya No. 1",
                 phone="081234567890"
             ),
