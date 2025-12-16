@@ -76,42 +76,80 @@ def logout():
         }
     }), 200
 
-# RT (warga), RW (sekretaris, bendahara, warga), Admin
 @auth_bp.get("/profile/<int:id>")
 @jwt_required()
 def profile(id):
     user = Users.query.get_or_404(id)
+    
+    current_user_id = get_jwt_identity()
+    current_user = Users.query.get(current_user_id)
+    
+    if str(current_user_id) != str(id) and current_user.role not in ['admin', 'rw'] and current_user.sub_role != 'rt':
+        return jsonify({"message": "Unauthorized"}), 403
+    
     return jsonify(user_data(user, data_full=True)), 200
 
-# RT (warga), RW (sekretaris, bendahara, warga), Admin
 @auth_bp.get("/all")
 @jwt_required()
 def all_users():
-    users = Users.query.all()
+    current_user_id = get_jwt_identity()
+    current_user = Users.query.get(current_user_id)
+    
+    if current_user.sub_role == 'admin':
+        users = Users.query.all()
+    elif current_user.sub_role == 'rw':
+        users = Users.query.filter(
+            Users.sub_role.in_(['warga', 'rt', 'rw'])
+        ).all()
+    elif current_user.sub_role == 'rt':
+        users = Users.query.filter_by(sub_role='warga').all()
+    else:
+        return jsonify({"message": "Unauthorized"}), 403
+    
     return jsonify([user_data(user) for user in users]), 200
 
-# Admin
 @auth_bp.put("/edit/<int:id>")
 @jwt_required()
 def edit(id):
     data = request.get_json()
     user = Users.query.get_or_404(id)
-
-    user.name = data.get("name", user.name)
-    user.address = data.get("address", user.address)
-    user.phone = data.get("phone", user.phone)
-
-    if data.get("password"):
-        user.password = generate_password_hash(data["password"])
-
-    db.session.commit()
-    return jsonify({"message": "Profil berhasil diperbarui"}), 200
     
-# Admin
+    current_user_id = get_jwt_identity()
+    current_user = Users.query.get(current_user_id)
+    
+    if str(current_user_id) != str(id) and current_user.role != 'admin':
+        return jsonify({"message": "Hanya admin yang dapat mengedit pengguna lain"}), 403
+    
+    if "name" in data:
+        user.name = data["name"]
+    if "address" in data:
+        user.address = data["address"]
+    if "phone" in data:
+        user.phone = data["phone"]
+    if "password" in data and data["password"]:
+        user.password = generate_password_hash(data["password"])
+    if "role" in data and current_user.role == 'admin':
+        user.role = data["role"]
+    if "sub_role" in data and current_user.role == 'admin':
+        user.sub_role = data["sub_role"]
+    
+    db.session.commit()
+    return jsonify({
+        "message": "Profil berhasil diperbarui",
+        "user": user_data(user)
+    }), 200
+    
 @auth_bp.delete("/delete/<int:id>")
 @jwt_required()
 def delete(id):
     user = Users.query.get_or_404(id)
+    
+    current_user_id = get_jwt_identity()
+    current_user = Users.query.get(current_user_id)
+    
+    if current_user.role != 'admin':
+        return jsonify({"message": "Hanya admin yang dapat menghapus pengguna"}), 403
+    
     db.session.delete(user)
     db.session.commit()
     return jsonify({"message": "Akun berhasil dihapus"}), 200
