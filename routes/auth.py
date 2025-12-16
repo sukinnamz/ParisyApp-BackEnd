@@ -39,8 +39,8 @@ def register():
         password=hashed,
         address=data.get("address", ""),
         phone=data.get("phone", ""),
-        role=data.get("role", "user"),
-        sub_role=data.get("sub_role", "warga")
+        role=data.get("role", ""),
+        sub_role=data.get("sub_role", "")
     )
 
     db.session.add(user)
