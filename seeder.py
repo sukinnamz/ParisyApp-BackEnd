@@ -79,7 +79,7 @@ def seed():
                 description="Kangkung segar dari petani lokal",
                 price=Decimal("5000.00"),
                 stock=100,
-                image="kangkung.jpg",
+                image="https://via.placeholder.com/300x300?text=Kangkung",
                 category="daun",
                 status="available",
                 created_by=users[0].id
@@ -89,7 +89,7 @@ def seed():
                 description="Bayam hijau organik",
                 price=Decimal("6000.00"),
                 stock=80,
-                image="bayam.jpg",
+                image="https://via.placeholder.com/300x300?text=Bayam",
                 category="daun",
                 status="available",
                 created_by=users[0].id
@@ -99,7 +99,7 @@ def seed():
                 description="Sawi hijau segar",
                 price=Decimal("4500.00"),
                 stock=60,
-                image="sawi.jpg",
+                image="https://via.placeholder.com/300x300?text=Sawi+Hijau",
                 category="daun",
                 status="available",
                 created_by=users[0].id
@@ -109,7 +109,7 @@ def seed():
                 description="Selada keriting segar",
                 price=Decimal("8000.00"),
                 stock=40,
-                image="selada.jpg",
+                image="https://via.placeholder.com/300x300?text=Selada",
                 category="daun",
                 status="available",
                 created_by=users[1].id
@@ -119,7 +119,7 @@ def seed():
                 description="Wortel manis kualitas premium",
                 price=Decimal("12000.00"),
                 stock=50,
-                image="wortel.jpg",
+                image="https://via.placeholder.com/300x300?text=Wortel",
                 category="akar",
                 status="available",
                 created_by=users[0].id
@@ -129,7 +129,7 @@ def seed():
                 description="Kentang grade A",
                 price=Decimal("15000.00"),
                 stock=70,
-                image="kentang.jpg",
+                image="https://via.placeholder.com/300x300?text=Kentang",
                 category="akar",
                 status="available",
                 created_by=users[1].id
@@ -139,7 +139,7 @@ def seed():
                 description="Bawang merah lokal",
                 price=Decimal("35000.00"),
                 stock=30,
-                image="bawang_merah.jpg",
+                image="https://via.placeholder.com/300x300?text=Bawang+Merah",
                 category="akar",
                 status="available",
                 created_by=users[0].id
@@ -149,7 +149,7 @@ def seed():
                 description="Brokoli hijau segar",
                 price=Decimal("18000.00"),
                 stock=25,
-                image="brokoli.jpg",
+                image="https://via.placeholder.com/300x300?text=Brokoli",
                 category="bunga",
                 status="available",
                 created_by=users[1].id
@@ -159,7 +159,7 @@ def seed():
                 description="Kembang kol putih segar",
                 price=Decimal("16000.00"),
                 stock=20,
-                image="kembang_kol.jpg",
+                image="https://via.placeholder.com/300x300?text=Kembang+Kol",
                 category="bunga",
                 status="available",
                 created_by=users[0].id
@@ -169,7 +169,7 @@ def seed():
                 description="Tomat merah segar",
                 price=Decimal("10000.00"),
                 stock=90,
-                image="tomat.jpg",
+                image="https://via.placeholder.com/300x300?text=Tomat",
                 category="buah",
                 status="available",
                 created_by=users[0].id
@@ -179,7 +179,7 @@ def seed():
                 description="Terong ungu berkualitas",
                 price=Decimal("7000.00"),
                 stock=55,
-                image="terong.jpg",
+                image="https://via.placeholder.com/300x300?text=Terong",
                 category="buah",
                 status="available",
                 created_by=users[1].id
@@ -189,7 +189,7 @@ def seed():
                 description="Cabai merah pedas",
                 price=Decimal("45000.00"),
                 stock=15,
-                image="cabai.jpg",
+                image="https://via.placeholder.com/300x300?text=Cabai+Merah",
                 category="buah",
                 status="available",
                 created_by=users[0].id
@@ -199,7 +199,7 @@ def seed():
                 description="Buncis segar (stok habis)",
                 price=Decimal("9000.00"),
                 stock=0,
-                image="buncis.jpg",
+                image="https://via.placeholder.com/300x300?text=Buncis",
                 category="buah",
                 status="unavailable",
                 created_by=users[1].id
