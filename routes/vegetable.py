@@ -5,6 +5,7 @@ from models.users import Users
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from datetime import datetime
 from functools import wraps
+import requests
 
 vegetable_bp = Blueprint("vegetable", __name__)
 
@@ -31,6 +32,23 @@ def can_update_stock(user):
 
 def can_view_admin(user):
     return user.role == 'admin' or user.sub_role in ['rw', 'rt', 'sekretaris', 'bendahara']
+
+def predict_category_from_image(image_url):
+    try:
+        response = requests.post(
+            "https://sukinnamz-klasifikasi-kategori-sayur.hf.space/predict",
+            json={"image_url": image_url},
+            timeout=10
+        )
+        if response.status_code == 200:
+            result = response.json()
+            predicted_category = result.get("category") or result.get("prediction")
+            if predicted_category in ['daun', 'akar', 'bunga', 'buah']:
+                return predicted_category
+        return None
+    except Exception as e:
+        print(f"Error predicting category: {str(e)}")
+        return None
 
 def vegetable_data(vegetable, detailed=False):
     data = {
@@ -82,11 +100,19 @@ def add(current_user):
     if not data.get("name") or not data.get("price"):
         return jsonify({"message": "Nama sayuran dan harga harus diisi"}), 400
     
-    if not data.get("category"):
-        return jsonify({"message": "Kategori sayuran harus diisi"}), 400
-    
     if Vegetables.query.filter_by(name=data["name"]).first():
         return jsonify({"message": "Sayuran dengan nama tersebut sudah ada"}), 409
+    
+    category = data.get("category")
+    predicted_category = None
+    
+    if data.get("image"):
+        predicted_category = predict_category_from_image(data["image"])
+        if predicted_category:
+            category = predicted_category
+    
+    if not category:
+        return jsonify({"message": "Kategori sayuran harus diisi atau image harus valid untuk prediksi"}), 400
     
     vegetable = Vegetables(
         name=data["name"],
@@ -94,7 +120,7 @@ def add(current_user):
         price=float(data["price"]),
         stock=int(data.get("stock", 0)),
         image=data.get("image", ""),
-        category=data["category"],
+        category=category,
         status=data.get("status", "available"),
         created_by=current_user.id
     )
@@ -102,10 +128,15 @@ def add(current_user):
     db.session.add(vegetable)
     db.session.commit()
 
-    return jsonify({
+    response_data = {
         "message": "Sayuran berhasil ditambahkan",
         "vegetable": vegetable_data(vegetable)
-    }), 201
+    }
+    
+    if predicted_category:
+        response_data["predicted_category"] = predicted_category
+    
+    return jsonify(response_data), 201
 
 @vegetable_bp.put("/update/<int:id>")
 @requires_permission(can_manage_vegetables, "Anda tidak memiliki izin untuk mengupdate sayuran")
@@ -113,7 +144,6 @@ def update(current_user, id):
     veg = Vegetables.query.get_or_404(id)
     data = request.get_json()
     
-    # Validasi nama unik jika nama diubah
     if 'name' in data:
         existing_veg = Vegetables.query.filter_by(name=data['name']).first()
         if existing_veg and existing_veg.id != id:
