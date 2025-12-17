@@ -7,7 +7,7 @@ class Vegetables(db.Model):
     description = db.Column(db.Text)
     price = db.Column(db.Numeric(10, 2), nullable=False)
     stock = db.Column(db.Integer, default=0)
-    image = db.Column(db.String(255))
+    image = db.Column(db.String(255), nullable=True)
     category = db.Column(db.Enum('daun', 'akar', 'bunga', 'buah'), nullable=False)
     status = db.Column(db.Enum('available', 'unavailable'), default='available')
     created_by = db.Column(db.Integer, db.ForeignKey('users.id'))
