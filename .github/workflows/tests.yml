@@ -1,28 +1,38 @@
-name: Marketplace API Tests
+name: Backend API Tests (Flask + Pytest)
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - main
+      - develop
+      - testing
   pull_request:
-    branches: ["main"]
+    branches:
+      - main
+      - develop
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repo
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Setup Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: "3.10"
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
 
-    - name: Install dependencies
-      run: |
-        pip install --upgrade pip
-        pip install -r requirements.txt
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-flask flask-jwt-extended
 
-    - name: Run tests
-      run: pytest -v
+      - name: Run Pytest
+        env:
+          FLASK_ENV: testing
+          JWT_SECRET_KEY: testing-secret
+        run: |
+          pytest tests/auth -v
