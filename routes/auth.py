@@ -122,6 +122,11 @@ def edit(id):
     
     if "name" in data:
         user.name = data["name"]
+    if "email" in data:
+        existing_user = Users.query.filter_by(email=data["email"]).first()
+        if existing_user and existing_user.id != id:
+            return jsonify({"message": "Email sudah digunakan"}), 409
+        user.email = data["email"]
     if "address" in data:
         user.address = data["address"]
     if "phone" in data:
