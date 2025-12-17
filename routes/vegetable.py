@@ -82,6 +82,9 @@ def add(current_user):
     if not data.get("name") or not data.get("price"):
         return jsonify({"message": "Nama sayuran dan harga harus diisi"}), 400
     
+    if not data.get("category"):
+        return jsonify({"message": "Kategori sayuran harus diisi"}), 400
+    
     if Vegetables.query.filter_by(name=data["name"]).first():
         return jsonify({"message": "Sayuran dengan nama tersebut sudah ada"}), 409
     
@@ -91,7 +94,7 @@ def add(current_user):
         price=float(data["price"]),
         stock=int(data.get("stock", 0)),
         image=data.get("image", ""),
-        category=data.get("category", "sayuran"),
+        category=data["category"],
         status=data.get("status", "available"),
         created_by=current_user.id
     )
@@ -110,7 +113,14 @@ def update(current_user, id):
     veg = Vegetables.query.get_or_404(id)
     data = request.get_json()
     
-    for field in ['name', 'description', 'image', 'category', 'status']:
+    # Validasi nama unik jika nama diubah
+    if 'name' in data:
+        existing_veg = Vegetables.query.filter_by(name=data['name']).first()
+        if existing_veg and existing_veg.id != id:
+            return jsonify({"message": "Sayuran dengan nama tersebut sudah ada"}), 409
+        veg.name = data['name']
+    
+    for field in ['description', 'image', 'category', 'status']:
         if field in data:
             setattr(veg, field, data[field])
     
