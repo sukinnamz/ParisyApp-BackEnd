@@ -21,8 +21,8 @@ def create_app():
     })
 
     app.register_blueprint(auth_bp, url_prefix="/auth")
-    app.register_blueprint(vegetable_bp, url_prefix="/vegetables")
-    app.register_blueprint(transaction_bp, url_prefix="/transactions")
+    app.register_blueprint(vegetable_bp, url_prefix="/vegetable")
+    app.register_blueprint(transaction_bp, url_prefix="/transaction")
 
     with app.app_context():
         db.create_all()
