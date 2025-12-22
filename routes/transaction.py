@@ -119,6 +119,36 @@ def detail(id):
     }
     return jsonify(result)
 
+@transaction_bp.get("/all")
+@jwt_required()
+def get_all():
+    transactions = Transactions.query.all()
+    result = []
+    for txn in transactions:
+        details = DetailTransactions.query.filter_by(transaction_id=txn.id).all()
+        items = []
+        for detail in details:
+            items.append({
+                "vegetable_id": detail.vegetable_id,
+                "quantity": detail.quantity,
+                "unit_price": str(detail.unit_price),
+                "subtotal": str(detail.subtotal)
+            })
+        result.append({
+            "transaction_id": txn.id,
+            "code": txn.code,
+            "user_id": txn.user_id,
+            "total_price": str(txn.total_price),
+            "payment_method": txn.payment_method,
+            "transaction_status": txn.transaction_status,
+            "notes": txn.notes,
+            "created_at": txn.created_at.isoformat() if txn.created_at else None,
+            "updated_at": txn.updated_at.isoformat() if txn.updated_at else None,
+            "items": items
+        })
+    return jsonify(result)
+
+
 @transaction_bp.delete("/delete/<int:id>")
 @jwt_required()
 def delete(id):
