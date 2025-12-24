@@ -106,7 +106,7 @@ def all_users():
     else:
         return jsonify({"message": "Unauthorized"}), 403
     
-    return jsonify([user_data(user) for user in users]), 200
+    return jsonify([user_data(user, data_full=True) for user in users]), 200
 
 @auth_bp.put("/edit/<int:id>")
 @jwt_required()
@@ -117,20 +117,25 @@ def edit(id):
     current_user_id = get_jwt_identity()
     current_user = Users.query.get(current_user_id)
     
-    if str(current_user_id) != str(id) and current_user.role != 'admin':
+    if str(current_user_id) != str(id) and current_user.sub_role != 'admin':
         return jsonify({"message": "Hanya admin yang dapat mengedit pengguna lain"}), 403
     
     if "name" in data:
         user.name = data["name"]
+    if "email" in data:
+        existing_user = Users.query.filter_by(email=data["email"]).first()
+        if existing_user and existing_user.id != id:
+            return jsonify({"message": "Email sudah digunakan"}), 409
+        user.email = data["email"]
     if "address" in data:
         user.address = data["address"]
     if "phone" in data:
         user.phone = data["phone"]
     if "password" in data and data["password"]:
         user.password = generate_password_hash(data["password"])
-    if "role" in data and current_user.role == 'admin':
+    if "role" in data and current_user.sub_role == 'admin':
         user.role = data["role"]
-    if "sub_role" in data and current_user.role == 'admin':
+    if "sub_role" in data and current_user.sub_role == 'admin':
         user.sub_role = data["sub_role"]
     
     db.session.commit()
@@ -147,7 +152,7 @@ def delete(id):
     current_user_id = get_jwt_identity()
     current_user = Users.query.get(current_user_id)
     
-    if current_user.role != 'admin':
+    if current_user.sub_role != 'admin':
         return jsonify({"message": "Hanya admin yang dapat menghapus pengguna"}), 403
     
     db.session.delete(user)

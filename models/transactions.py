@@ -1,5 +1,5 @@
 from extensions import db
-from datetime import datetime
+from sqlalchemy import func
 
 class Transactions(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -9,5 +9,5 @@ class Transactions(db.Model):
     payment_method = db.Column(db.Enum('transfer', 'cash'))
     transaction_status = db.Column(db.Enum('pending', 'completed', 'cancelled'), default='pending')
     notes = db.Column(db.Text)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = db.Column(db.DateTime, server_default=func.now())
+    updated_at = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now())

@@ -1,5 +1,5 @@
 from extensions import db
-from datetime import datetime
+from sqlalchemy import func
 
 class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -10,5 +10,5 @@ class Users(db.Model):
     sub_role = db.Column(db.Enum('admin', 'bendahara', 'sekretaris', 'rw', 'rt', 'warga'), nullable=True)
     address = db.Column(db.Text)
     phone = db.Column(db.String(20))
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = db.Column(db.DateTime, server_default=func.now())
+    updated_at = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now())

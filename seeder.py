@@ -84,294 +84,120 @@ def seed():
         # Seed Vegetables
         vegetables = [
             Vegetables(
-                name="Kangkung",
-                description="Kangkung segar dari petani lokal",
-                price=Decimal("5000.00"),
-                stock=100,
-                image="kangkung.jpg",
-                category="daun",
+                name="Bawang Bombay",
+                description="Bawang bombay segar dari petani lokal",
+                price=Decimal("15000.00"),
+                stock=50,
+                image="https://via.placeholder.com/300x300?text=Bawang+Bombay",
+                category="akar",
                 status="available",
                 created_by=users[0].id
-            ),
-            Vegetables(
-                name="Bayam",
-                description="Bayam hijau organik",
-                price=Decimal("6000.00"),
-                stock=80,
-                image="bayam.jpg",
-                category="daun",
-                status="available",
-                created_by=users[0].id
-            ),
-            Vegetables(
-                name="Sawi Hijau",
-                description="Sawi hijau segar",
-                price=Decimal("4500.00"),
-                stock=60,
-                image="sawi.jpg",
-                category="daun",
-                status="available",
-                created_by=users[0].id
-            ),
-            Vegetables(
-                name="Selada",
-                description="Selada keriting segar",
-                price=Decimal("8000.00"),
-                stock=40,
-                image="selada.jpg",
-                category="daun",
-                status="available",
-                created_by=users[1].id
             ),
             Vegetables(
                 name="Wortel",
-                description="Wortel manis kualitas premium",
+                description="Wortel organik, kaya akan vitamin A",
                 price=Decimal("12000.00"),
-                stock=50,
-                image="wortel.jpg",
+                stock=100,
+                image="https://via.placeholder.com/300x300?text=Wortel",
                 category="akar",
                 status="available",
                 created_by=users[0].id
             ),
             Vegetables(
                 name="Kentang",
-                description="Kentang grade A",
-                price=Decimal("15000.00"),
-                stock=70,
-                image="kentang.jpg",
-                category="akar",
-                status="available",
-                created_by=users[1].id
-            ),
-            Vegetables(
-                name="Bawang Merah",
-                description="Bawang merah lokal",
-                price=Decimal("35000.00"),
-                stock=30,
-                image="bawang_merah.jpg",
+                description="Kentang segar, cocok untuk berbagai masakan",
+                price=Decimal("10000.00"),
+                stock=80,
+                image="https://via.placeholder.com/300x300?text=Kentang",
                 category="akar",
                 status="available",
                 created_by=users[0].id
             ),
             Vegetables(
-                name="Brokoli",
-                description="Brokoli hijau segar",
-                price=Decimal("18000.00"),
-                stock=25,
-                image="brokoli.jpg",
-                category="bunga",
+                name="Kangkung",
+                description="Kangkung segar dari sawah lokal",
+                price=Decimal("8000.00"),
+                stock=60,
+                image="https://via.placeholder.com/300x300?text=Kangkung",
+                category="daun",
                 status="available",
-                created_by=users[1].id
+                created_by=users[0].id
             ),
             Vegetables(
-                name="Kembang Kol",
-                description="Kembang kol putih segar",
-                price=Decimal("16000.00"),
-                stock=20,
-                image="kembang_kol.jpg",
-                category="bunga",
+                name="Kubis",
+                description="Kubis segar, kaya serat dan vitamin",
+                price=Decimal("9000.00"),
+                stock=70,
+                image="https://via.placeholder.com/300x300?text=Kubis",
+                category="daun",
+                status="available",
+                created_by=users[0].id
+            ),
+            Vegetables(
+                name="Sawi Putih",
+                description="Sawi putih segar, cocok untuk sayur bening",
+                price=Decimal("8500.00"),
+                stock=90,
+                image="https://via.placeholder.com/300x300?text=Sawi+Putih",
+                category="daun",
                 status="available",
                 created_by=users[0].id
             ),
             Vegetables(
                 name="Tomat",
-                description="Tomat merah segar",
-                price=Decimal("10000.00"),
-                stock=90,
-                image="tomat.jpg",
-                category="buah",
-                status="available",
-                created_by=users[0].id
-            ),
-            Vegetables(
-                name="Terong",
-                description="Terong ungu berkualitas",
+                description="Tomat segar, kaya akan likopen",
                 price=Decimal("7000.00"),
-                stock=55,
-                image="terong.jpg",
-                category="buah",
-                status="available",
-                created_by=users[1].id
-            ),
-            Vegetables(
-                name="Cabai Merah",
-                description="Cabai merah pedas",
-                price=Decimal("45000.00"),
-                stock=15,
-                image="cabai.jpg",
+                stock=120,
+                image="https://via.placeholder.com/300x300?text=Tomat",
                 category="buah",
                 status="available",
                 created_by=users[0].id
             ),
             Vegetables(
-                name="Buncis",
-                description="Buncis segar (stok habis)",
-                price=Decimal("9000.00"),
-                stock=0,
-                image="buncis.jpg",
+                name="Timun",
+                description="Timun segar, cocok untuk lalapan",
+                price=Decimal("6000.00"),
+                stock=110,
+                image="https://via.placeholder.com/300x300?text=Timun",
                 category="buah",
-                status="unavailable",
-                created_by=users[1].id
+                status="available",
+                created_by=users[0].id
             ),
+            Vegetables(
+                name="Cabai",
+                description="Cabai merah segar, pedas alami",
+                price=Decimal("20000.00"),
+                stock=40,
+                image="https://via.placeholder.com/300x300?text=Cabai",
+                category="buah",
+                status="available",
+                created_by=users[0].id
+            ),
+            Vegetables(
+                name="Bunga Kol",
+                description="Bunga kol segar, kaya akan vitamin C",
+                price=Decimal("11000.00"),
+                stock=55,
+                image="https://via.placeholder.com/300x300?text=Bunga+Kol",
+                category="bunga",
+                status="available",
+                created_by=users[0].id
+            ),
+            Vegetables(
+                name="Brokoli",
+                description="Brokoli segar, baik untuk kesehatan tulang",
+                price=Decimal("13000.00"),
+                stock=65,
+                image="https://via.placeholder.com/300x300?text=Brokoli",
+                category="bunga",
+                status="available",
+                created_by=users[0].id
+            )
         ]
         
         db.session.add_all(vegetables)
         db.session.commit()
         print(f"✓ {len(vegetables)} sayuran berhasil ditambahkan")
         
-        # Seed Transactions
-        transactions = [
-            Transactions(
-                code="TRX20250101001",
-                user_id=users[3].id, 
-                total_price=Decimal("44000.00"),
-                payment_method="transfer",
-                transaction_status="completed",
-                notes="Pesanan untuk acara RT"
-            ),
-            Transactions(
-                code="TRX20250101002",
-                user_id=users[4].id,  
-                total_price=Decimal("85000.00"),
-                payment_method="cash",
-                transaction_status="completed",
-                notes=None
-            ),
-            Transactions(
-                code="TRX20250101003",
-                user_id=users[3].id,  
-                total_price=Decimal("62000.00"),
-                payment_method="transfer",
-                transaction_status="pending",
-                notes="Mohon diantar sore"
-            ),
-            Transactions(
-                code="TRX20250101004",
-                user_id=users[2].id, 
-                total_price=Decimal("150000.00"),
-                payment_method="transfer",
-                transaction_status="completed",
-                notes="Untuk kegiatan posyandu"
-            ),
-            Transactions(
-                code="TRX20250101005",
-                user_id=users[4].id,  
-                total_price=Decimal("28000.00"),
-                payment_method="cash",
-                transaction_status="cancelled",
-                notes="Dibatalkan karena barang tidak sesuai"
-            ),
-        ]
-        
-        db.session.add_all(transactions)
-        db.session.commit()
-        print(f"✓ {len(transactions)} transaksi berhasil ditambahkan")
-        
-        # Seed Detail Transactions
-        detail_transactions = [
-            DetailTransactions(
-                transaction_id=transactions[0].id,
-                vegetable_id=vegetables[0].id,
-                quantity=3,
-                unit_price=Decimal("5000.00"),
-                subtotal=Decimal("15000.00")
-            ),
-            DetailTransactions(
-                transaction_id=transactions[0].id,
-                vegetable_id=vegetables[1].id,
-                quantity=2,
-                unit_price=Decimal("6000.00"),
-                subtotal=Decimal("12000.00")
-            ),
-            DetailTransactions(
-                transaction_id=transactions[0].id,
-                vegetable_id=vegetables[9].id,
-                quantity=1,
-                unit_price=Decimal("10000.00"),
-                subtotal=Decimal("10000.00")
-            ),
-            DetailTransactions(
-                transaction_id=transactions[0].id,
-                vegetable_id=vegetables[10].id,
-                quantity=1,
-                unit_price=Decimal("7000.00"),
-                subtotal=Decimal("7000.00")
-            ),
-            DetailTransactions(
-                transaction_id=transactions[1].id,
-                vegetable_id=vegetables[6].id,  
-                quantity=2,
-                unit_price=Decimal("35000.00"),
-                subtotal=Decimal("70000.00")
-            ),
-            DetailTransactions(
-                transaction_id=transactions[1].id,
-                vegetable_id=vegetables[5].id, 
-                quantity=1,
-                unit_price=Decimal("15000.00"),
-                subtotal=Decimal("15000.00")
-            ),
-            DetailTransactions(
-                transaction_id=transactions[2].id,
-                vegetable_id=vegetables[7].id, 
-                quantity=2,
-                unit_price=Decimal("18000.00"),
-                subtotal=Decimal("36000.00")
-            ),
-            DetailTransactions(
-                transaction_id=transactions[2].id,
-                vegetable_id=vegetables[4].id, 
-                quantity=2,
-                unit_price=Decimal("12000.00"),
-                subtotal=Decimal("24000.00")
-            ),
-            DetailTransactions(
-                transaction_id=transactions[2].id,
-                vegetable_id=vegetables[2].id, 
-                quantity=1,
-                unit_price=Decimal("4500.00"),
-                subtotal=Decimal("4500.00")
-            ),
-            DetailTransactions(
-                transaction_id=transactions[3].id,
-                vegetable_id=vegetables[0].id,  
-                quantity=10,
-                unit_price=Decimal("5000.00"),
-                subtotal=Decimal("50000.00")
-            ),
-            DetailTransactions(
-                transaction_id=transactions[3].id,
-                vegetable_id=vegetables[1].id,  
-                quantity=8,
-                unit_price=Decimal("6000.00"),
-                subtotal=Decimal("48000.00")
-            ),
-            DetailTransactions(
-                transaction_id=transactions[3].id,
-                vegetable_id=vegetables[9].id,  
-                quantity=5,
-                unit_price=Decimal("10000.00"),
-                subtotal=Decimal("50000.00")
-            ),
-            DetailTransactions(
-                transaction_id=transactions[4].id,
-                vegetable_id=vegetables[3].id,  
-                quantity=2,
-                unit_price=Decimal("8000.00"),
-                subtotal=Decimal("16000.00")
-            ),
-            DetailTransactions(
-                transaction_id=transactions[4].id,
-                vegetable_id=vegetables[4].id,  
-                quantity=1,
-                unit_price=Decimal("12000.00"),
-                subtotal=Decimal("12000.00")
-            ),
-        ]
-        
-        db.session.add_all(detail_transactions)
-        db.session.commit()
-        print(f"✓ {len(detail_transactions)} detail transaksi berhasil ditambahkan")
-
 if __name__ == "__main__":
     seed()

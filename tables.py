@@ -1,7 +1,7 @@
 from flask import Flask
 from config import Config
 from extensions import db
-from models import Users, Vegetables, Transactions, DetailTransactions
+import models
 
 def tables():
     app = Flask(__name__)
