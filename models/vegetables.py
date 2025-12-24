@@ -1,5 +1,5 @@
 from extensions import db
-from datetime import datetime
+from sqlalchemy import func
 
 class Vegetables(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -11,5 +11,5 @@ class Vegetables(db.Model):
     category = db.Column(db.Enum('daun', 'akar', 'bunga', 'buah'), nullable=False)
     status = db.Column(db.Enum('available', 'unavailable'), default='available')
     created_by = db.Column(db.Integer, db.ForeignKey('users.id'))
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = db.Column(db.DateTime, server_default=func.now())
+    updated_at = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now())

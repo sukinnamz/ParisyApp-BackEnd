@@ -3,8 +3,46 @@ from extensions import db
 from models.transactions import Transactions
 from models.detail_transaction import DetailTransactions
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from datetime import datetime
 
 transaction_bp = Blueprint("transaction", __name__)
+
+
+def detail_item_data(detail):
+    """Serialize detail transaction item"""
+    return {
+        "vegetable_id": detail.vegetable_id,
+        "quantity": detail.quantity,
+        "unit_price": str(detail.unit_price),
+        "subtotal": str(detail.subtotal)
+    }
+
+
+def transaction_data(txn, include_user=False, include_timestamps=False):
+    """Serialize transaction data"""
+    data = {
+        "transaction_id": txn.id,
+        "code": txn.code,
+        "total_price": str(txn.total_price),
+        "payment_method": txn.payment_method,
+        "transaction_status": txn.transaction_status,
+        "notes": txn.notes,
+        "created_at": txn.created_at.isoformat() if txn.created_at else None,
+    }
+    if include_user:
+        data["user_id"] = txn.user_id
+    if include_timestamps:
+        data["updated_at"] = txn.updated_at.isoformat() if txn.updated_at else None
+    return data
+
+
+def transaction_with_items(txn, include_user=False, include_timestamps=False):
+    """Serialize transaction with its detail items"""
+    details = DetailTransactions.query.filter_by(transaction_id=txn.id).all()
+    data = transaction_data(txn, include_user, include_timestamps)
+    data["items"] = [detail_item_data(d) for d in details]
+    return data
+
 
 @transaction_bp.post("/create")
 @jwt_required()
@@ -13,8 +51,6 @@ def create():
         data = request.get_json()
         user_id = get_jwt_identity()
         
-        # Generate transaction code
-        from datetime import datetime
         code = f"TRX{datetime.now().strftime('%Y%m%d%H%M%S')}"
 
         transaction = Transactions(
@@ -69,84 +105,21 @@ def update(id):
 def history():
     user_id = get_jwt_identity()
     transactions = Transactions.query.filter_by(user_id=user_id).all()
-    result = []
-    for txn in transactions:
-        details = DetailTransactions.query.filter_by(transaction_id=txn.id).all()
-        items = []
-        for detail in details:
-            items.append({
-                "vegetable_id": detail.vegetable_id,
-                "quantity": detail.quantity,
-                "unit_price": str(detail.unit_price),
-                "subtotal": str(detail.subtotal)
-            })
-        result.append({
-            "transaction_id": txn.id,
-            "code": txn.code,
-            "total_price": str(txn.total_price),
-            "payment_method": txn.payment_method,
-            "transaction_status": txn.transaction_status,
-            "notes": txn.notes,
-            "created_at": txn.created_at.isoformat() if txn.created_at else None,
-            "items": items
-        })
-    return jsonify(result)
+    return jsonify([transaction_with_items(txn) for txn in transactions])
+
 
 @transaction_bp.get("/detail/<int:id>")
 @jwt_required()
 def detail(id):
     transaction = Transactions.query.get_or_404(id)
-    details = DetailTransactions.query.filter_by(transaction_id=transaction.id).all()
-    items = []
-    for detail in details:
-        items.append({
-            "vegetable_id": detail.vegetable_id,
-            "quantity": detail.quantity,
-            "unit_price": str(detail.unit_price),
-            "subtotal": str(detail.subtotal)
-        })
-    result = {
-        "transaction_id": transaction.id,
-        "code": transaction.code,
-        "user_id": transaction.user_id,
-        "total_price": str(transaction.total_price),
-        "payment_method": transaction.payment_method,
-        "transaction_status": transaction.transaction_status,
-        "notes": transaction.notes,
-        "created_at": transaction.created_at.isoformat() if transaction.created_at else None,
-        "updated_at": transaction.updated_at.isoformat() if transaction.updated_at else None,
-        "items": items
-    }
-    return jsonify(result)
+    return jsonify(transaction_with_items(transaction, include_user=True, include_timestamps=True))
+
 
 @transaction_bp.get("/all")
 @jwt_required()
 def get_all():
     transactions = Transactions.query.all()
-    result = []
-    for txn in transactions:
-        details = DetailTransactions.query.filter_by(transaction_id=txn.id).all()
-        items = []
-        for detail in details:
-            items.append({
-                "vegetable_id": detail.vegetable_id,
-                "quantity": detail.quantity,
-                "unit_price": str(detail.unit_price),
-                "subtotal": str(detail.subtotal)
-            })
-        result.append({
-            "transaction_id": txn.id,
-            "code": txn.code,
-            "user_id": txn.user_id,
-            "total_price": str(txn.total_price),
-            "payment_method": txn.payment_method,
-            "transaction_status": txn.transaction_status,
-            "notes": txn.notes,
-            "created_at": txn.created_at.isoformat() if txn.created_at else None,
-            "updated_at": txn.updated_at.isoformat() if txn.updated_at else None,
-            "items": items
-        })
-    return jsonify(result)
+    return jsonify([transaction_with_items(txn, include_user=True, include_timestamps=True) for txn in transactions])
 
 
 @transaction_bp.delete("/delete/<int:id>")

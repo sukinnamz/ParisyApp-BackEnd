@@ -1,7 +1,7 @@
 from flask import Flask
 from config import Config
 from extensions import db, jwt
-from models import *
+import models
 from routes import auth_bp, vegetable_bp, transaction_bp, finance_bp
 from flask_cors import CORS
 

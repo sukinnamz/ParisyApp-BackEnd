@@ -1,8 +1,7 @@
 from flask import Blueprint, request, jsonify
 from extensions import db
 from models.transactions import Transactions
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from datetime import datetime
+from flask_jwt_extended import jwt_required
 from sqlalchemy import func
 
 finance_bp = Blueprint("finance", __name__)
