@@ -82,7 +82,7 @@ def profile(id):
     user = Users.query.get_or_404(id)
     
     current_user_id = get_jwt_identity()
-    current_user = Users.query.get(current_user_id)
+    current_user = Users.query.get(int(current_user_id))
     
     if str(current_user_id) != str(id) and current_user.role not in ['admin', 'rw'] and current_user.sub_role != 'rt':
         return jsonify({"message": "Unauthorized"}), 403
@@ -93,7 +93,7 @@ def profile(id):
 @jwt_required()
 def all_users():
     current_user_id = get_jwt_identity()
-    current_user = Users.query.get(current_user_id)
+    current_user = Users.query.get(int(current_user_id))
     
     if current_user.sub_role == 'admin':
         users = Users.query.all()
