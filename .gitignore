@@ -3,3 +3,13 @@ __pycache__/
 */__pycache__/
 
 /pytest_cache/
+
+/routes/__pycache__/
+
+tests/__pycache__/
+
+tests/unit/__pycache__/
+
+tests/integration/__pycache__/
+
+models/__pycache__/
