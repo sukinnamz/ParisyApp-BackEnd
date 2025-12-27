@@ -1,15 +1,16 @@
-name: Backend API Tests (Flask + Pytest)
+name: ParisyApp Testing Workflow
 
 on:
   push:
     branches:
       - main
-      - develop
+      - dev
       - testing
   pull_request:
     branches:
       - main
-      - develop
+      - dev
+      - testing
 
 jobs:
   test:
