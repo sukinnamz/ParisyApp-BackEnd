@@ -35,4 +35,4 @@ jobs:
           FLASK_ENV: testing
           JWT_SECRET_KEY: testing-secret
         run: |
-          pytest tests/auth -v
+          pytest -v
