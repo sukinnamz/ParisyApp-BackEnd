@@ -115,7 +115,7 @@ def edit(id):
     user = Users.query.get_or_404(id)
     
     current_user_id = get_jwt_identity()
-    current_user = Users.query.get(current_user_id)
+    current_user = Users.query.get(int(current_user_id))
     
     if str(current_user_id) != str(id) and current_user.sub_role != 'admin':
         return jsonify({"message": "Hanya admin yang dapat mengedit pengguna lain"}), 403
@@ -150,7 +150,7 @@ def delete(id):
     user = Users.query.get_or_404(id)
     
     current_user_id = get_jwt_identity()
-    current_user = Users.query.get(current_user_id)
+    current_user = Users.query.get(int(current_user_id))
     
     if current_user.sub_role != 'admin':
         return jsonify({"message": "Hanya admin yang dapat menghapus pengguna"}), 403
